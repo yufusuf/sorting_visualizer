@@ -10,12 +10,14 @@ void bubble_sort(int bars[], int size);
 void drawBars(sf::RenderWindow& window, int heights[]);
 void quick_sort(int bars[], int first, int last);
 void shuffleArray(int bars[]);
+void merge_sort(int bars[], int start, int end);
+void merge_arrays(int bars[], int start, int mid ,int end);
 
 static const int WINDOW_HEIGHT = 512;
 static const int WINDOW_WIDTH = 1024;
-static const float bar_width = 2.0f;
-int bars_count = WINDOW_WIDTH / bar_width;
-int low, high;
+static const float bar_width = 4.0f;
+static const int bars_count = WINDOW_WIDTH / bar_width;
+
 
 sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Sorting Visualizer", sf::Style::Resize | sf::Style::Close);
 
@@ -26,8 +28,8 @@ void drawBars(sf::RenderWindow& window, int heights[])
     {
         int height = heights[x];
         sf::RectangleShape bar(sf::Vector2f(bar_width, height));
-        if (x == low || x == high)
-            bar.setFillColor(sf::Color::Green);
+        //if (x == low || x == high)
+        //    bar.setFillColor(sf::Color::Green);
 
         bar.setPosition(sf::Vector2f(bar_width * x, WINDOW_HEIGHT - bar.getSize().y));
         window.draw(bar);
@@ -53,6 +55,59 @@ void swap_(int bars[], int index1, int index2)
     //Sleep(10);
 }
 
+void merge_arrays(int bars[], int start, int mid, int end)
+{
+    int index = start;
+    int start1 = start;
+    int start2 = mid + 1;
+    int last1 = mid;
+    int last2 = end;
+    int *temp = new int[bars_count];
+
+    for (; (start1 <= last1) && (start2 <= last2); index++)
+    {
+        if (bars[start1] <= bars[start2])
+        {
+            temp[index] = bars[start1];
+            start1++;
+        }
+        else
+        {
+            temp[index] = bars[start2];
+            start2++;
+        }
+    }
+
+    for(; start2 <= last2; start2++,index++)
+    {
+        temp[index] = bars[start2];
+    }
+    for (; start1 <= last1; start1++,index++)
+    {
+        temp[index] = bars[start1];
+    }
+    for (index = start; index <= end; index++)
+    {
+        bars[index] = temp[index];
+    }
+    Sleep(10);
+    drawBars(window, bars);
+    delete[] temp;
+}
+
+void merge_sort(int bars[], int start, int end)
+{
+    if (start >= end)
+        return;
+    int mid = (start + end) / 2;
+  
+    merge_sort(bars, start, mid);
+    merge_sort(bars, mid + 1, end);
+    
+    merge_arrays(bars, start, mid, end);
+
+    
+}
 
 void bubble_sort(int bars[], int size)
 {
@@ -112,8 +167,8 @@ void quick_sort(int bars[], int first, int last)
 {
     if (first < last)
     {
-        low = first;
-        high = last;
+        //low = first;q
+        //high = last;
         int pivot = partition(bars, first, last);
         quick_sort(bars, first, pivot);
         quick_sort(bars, pivot + 1, last);
@@ -125,6 +180,7 @@ int main()
 {
     // ===== CONSTRUCTUING BARS ==== //
     srand(time(NULL));
+    bool isSorted = false;
     int* heights = new int[bars_count];
 
     for (int i = 0; i < bars_count; i++)
@@ -144,13 +200,23 @@ int main()
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
-            shuffleArray(heights);
+            if (isSorted) 
+                shuffleArray(heights); 
+               
             quick_sort(heights, 0, bars_count - 1);
+            isSorted = true;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
         {
-            shuffleArray(heights);
+            if (isSorted) shuffleArray(heights);
             bubble_sort(heights, bars_count);
+            isSorted = true;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+        {
+            if (isSorted) shuffleArray(heights);
+            merge_sort(heights, 0, bars_count-1);
+            isSorted = true;
         }
 
     }
