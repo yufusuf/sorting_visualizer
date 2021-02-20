@@ -13,7 +13,7 @@ void shuffleArray(int bars[]);
 
 static const int WINDOW_HEIGHT = 512;
 static const int WINDOW_WIDTH = 1024;
-static const float bar_width = 8.0f;
+static const float bar_width = 2.0f;
 int bars_count = WINDOW_WIDTH / bar_width;
 int low, high;
 
@@ -130,7 +130,6 @@ int main()
     for (int i = 0; i < bars_count; i++)
     {
         heights[i] = rand() % WINDOW_HEIGHT;
-
     }
 
     drawBars(window, heights);
@@ -145,7 +144,6 @@ int main()
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
-            //shuffle array
             shuffleArray(heights);
             quick_sort(heights, 0, bars_count - 1);
         }
