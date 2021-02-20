@@ -8,17 +8,18 @@
 void swap_(int arr[], int, int);
 void bubble_sort(int bars[], int size);
 void drawBars(sf::RenderWindow& window, int heights[]);
-
+void quick_sort(int bars[], int first, int last);
+void shuffleArray(int bars[]);
 
 static const int WINDOW_HEIGHT = 512;
 static const int WINDOW_WIDTH = 1024;
-static const float bar_width = 2.0f;
+static const float bar_width = 8.0f;
 int bars_count = WINDOW_WIDTH / bar_width;
 int low, high;
 
 sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Sorting Visualizer", sf::Style::Resize | sf::Style::Close);
 
-void drawBars(sf::RenderWindow& window, int heights[]) 
+void drawBars(sf::RenderWindow& window, int heights[])
 {
     window.clear();
     for (int x = 0; x < bars_count; x++)
@@ -26,18 +27,29 @@ void drawBars(sf::RenderWindow& window, int heights[])
         int height = heights[x];
         sf::RectangleShape bar(sf::Vector2f(bar_width, height));
         if (x == low || x == high)
-            bar.setFillColor(sf::Color::Red);
-      
+            bar.setFillColor(sf::Color::Green);
+
         bar.setPosition(sf::Vector2f(bar_width * x, WINDOW_HEIGHT - bar.getSize().y));
         window.draw(bar);
     }
     window.display();
 }
 
+void shuffleArray(int bars[])
+{
+
+
+    for (int k = bars_count - 1; k >= 1; k--)
+    {
+        int random = rand() % k;
+        swap_(bars, random, k);
+    }
+}
+
 void swap_(int bars[], int index1, int index2)
 {
     std::swap(bars[index1], bars[index2]);
-    drawBars(window,bars);
+    drawBars(window, bars);
     //Sleep(10);
 }
 
@@ -48,21 +60,20 @@ void bubble_sort(int bars[], int size)
     while (swapped)
     {
         swapped = false;
-        for(int i = 1; i < size ; i++)
+        for (int i = 1; i < size; i++)
         {
             if (bars[i - 1] > bars[i])
             {
-              
                 swap_(bars, i, i - 1);
-             
                 swapped = true;
             }
         }
-     
+
     }
 }
+
 int partition(int bars[], int first, int last)
-{   
+{
     // LOMUTO
     /*int pivot = bars[last];
     int i = first - 1;
@@ -78,7 +89,7 @@ int partition(int bars[], int first, int last)
     return i + 1;*/
 
     // HOARE
-    int pivot = bars[ (int)std::floor( (first + last) / 2 ) ];
+    int pivot = bars[(int)std::floor((first + last) / 2)];
     int i = first - 1;
     int j = last + 1;
     while (true)
@@ -96,6 +107,7 @@ int partition(int bars[], int first, int last)
         swap_(bars, i, j);
     }
 }
+
 void quick_sort(int bars[], int first, int last)
 {
     if (first < last)
@@ -104,28 +116,25 @@ void quick_sort(int bars[], int first, int last)
         high = last;
         int pivot = partition(bars, first, last);
         quick_sort(bars, first, pivot);
-        quick_sort(bars, pivot+1, last);
+        quick_sort(bars, pivot + 1, last);
     }
 
 }
 
 int main()
 {
-    srand(time(NULL));
-    
-    
     // ===== CONSTRUCTUING BARS ==== //
-   
-    int *heights = new int[bars_count];
+    srand(time(NULL));
+    int* heights = new int[bars_count];
 
     for (int i = 0; i < bars_count; i++)
     {
         heights[i] = rand() % WINDOW_HEIGHT;
 
     }
-    
-    quick_sort(heights, 0, bars_count-1);
-    //bubble_sort(heights, bars_count);
+
+    drawBars(window, heights);
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -134,18 +143,18 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
             //shuffle array
-            for (int k = bars_count - 1; k >= 1; k--)
-            {
-                int random = rand() % k;
-                swap_(heights, random, k);
-            }
+            shuffleArray(heights);
             quick_sort(heights, 0, bars_count - 1);
-            //bubble_sort(heights, bars_count);
         }
-            
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+        {
+            shuffleArray(heights);
+            bubble_sort(heights, bars_count);
+        }
+
     }
 
 
