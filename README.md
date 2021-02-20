@@ -6,6 +6,6 @@ go to Release directory and execute sorting_visualization.exe
 
 
 use keyboard to select algorithm:
-	* "q" quick sort
-	* "m" merge sort
-	* "b" bubble sort
+* "q" quick sort
+* "m" merge sort
+* "b" bubble sort
