@@ -52,7 +52,7 @@ void swap_(int bars[], int index1, int index2)
 {
     std::swap(bars[index1], bars[index2]);
     drawBars(window, bars);
-    //Sleep(10);
+    Sleep(1);
 }
 
 void merge_arrays(int bars[], int start, int mid, int end)
