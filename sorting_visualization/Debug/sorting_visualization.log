@@ -1,0 +1,9 @@
+﻿  main.cpp
+C:\Users\TULPAR\Desktop\my_projects\main.cpp(16,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\TULPAR\Desktop\my_projects\main.cpp(27,56): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\TULPAR\Desktop\my_projects\main.cpp(114,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  sorting_visualization.vcxproj -> C:\Users\TULPAR\Desktop\my_projects\sorting_visualization\Debug\sorting_visualization.exe
