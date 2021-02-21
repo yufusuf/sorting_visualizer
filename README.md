@@ -9,3 +9,4 @@ use keyboard to select algorithm:
 * "q" quick sort
 * "m" merge sort
 * "b" bubble sort
+* "h" heap sort

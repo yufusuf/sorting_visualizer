@@ -12,10 +12,12 @@ void quick_sort(int bars[], int first, int last);
 void shuffleArray(int bars[]);
 void merge_sort(int bars[], int start, int end);
 void merge_arrays(int bars[], int start, int mid ,int end);
+void heap_sort(int bars[], int size);
+void percolate_down(int bars[], int index, int size);
 
 static const int WINDOW_HEIGHT = 512;
 static const int WINDOW_WIDTH = 1024;
-static const float bar_width = 4.0f;
+static const float bar_width = 2.0f;
 static const int bars_count = WINDOW_WIDTH / bar_width;
 
 
@@ -39,8 +41,7 @@ void drawBars(sf::RenderWindow& window, int heights[])
 
 void shuffleArray(int bars[])
 {
-
-
+    std::cout << "Shuffling " << std::endl;
     for (int k = bars_count - 1; k >= 1; k--)
     {
         int random = rand() % k;
@@ -49,10 +50,70 @@ void shuffleArray(int bars[])
 }
 
 void swap_(int bars[], int index1, int index2)
-{
+{   
+   
     std::swap(bars[index1], bars[index2]);
     drawBars(window, bars);
-    Sleep(1);
+    //Sleep(1);
+}
+
+void percolate_down(int bars[], int index, int size)
+{
+    int child;
+    int temp = bars[index];
+
+    for (; 2* index < size - 1 ; index = child)
+    {
+        child = 2 * index + 1;
+        if (child != size - 1 && bars[child] < bars[child + 1])
+          //^^(single child case)
+        {
+           
+            child++;
+        }
+        if (bars[child] > temp)
+        {
+            bars[index] = bars[child];
+        }
+        else break; // largest is parent, done
+
+    }
+    bars[index] = temp;
+    
+    //int left = 2 * index + 1;
+    //int right = 2 * index + 2;
+    //int largest = index;
+    //if (left < size && bars[left] > bars[largest])
+    //{
+    //    largest = left;
+    //}
+    //if (right < size && bars[right] > bars[largest])
+    //{
+    //    largest = right;
+    //}
+    //if (largest != index)
+    //{
+    //    swap_(bars, index, largest);
+    //    percolate_down(bars, largest, size);
+    //}
+}
+
+void heap_sort(int bars[], int size)
+{
+    //heapify the bars
+    std::cout << "Building heap..." << std::endl;
+
+    for(int i = size/2 - 1; i>=0; i--)
+    {
+        percolate_down(bars, i, size);
+        drawBars(window, bars);
+    }
+    std::cout << "Sorting" << std::endl;
+    for (int j = size - 1; j > 0; j--)
+    {
+        swap_(bars, 0, j);
+        percolate_down(bars, 0, j);
+    }
 }
 
 void merge_arrays(int bars[], int start, int mid, int end)
@@ -89,9 +150,10 @@ void merge_arrays(int bars[], int start, int mid, int end)
     for (index = start; index <= end; index++)
     {
         bars[index] = temp[index];
+        drawBars(window, bars);
     }
-    Sleep(10);
-    drawBars(window, bars);
+    //Sleep(10);
+   /* drawBars(window, bars);*/
     delete[] temp;
 }
 
@@ -103,9 +165,9 @@ void merge_sort(int bars[], int start, int end)
   
     merge_sort(bars, start, mid);
     merge_sort(bars, mid + 1, end);
-    
-    merge_arrays(bars, start, mid, end);
 
+    merge_arrays(bars, start, mid, end);
+    
     
 }
 
@@ -123,7 +185,7 @@ void bubble_sort(int bars[], int size)
                 swapped = true;
             }
         }
-
+        size--;
     }
 }
 
@@ -202,24 +264,34 @@ int main()
         {
             if (isSorted) 
                 shuffleArray(heights); 
-               
+            std::cout << "Quick sort" << std::endl;
             quick_sort(heights, 0, bars_count - 1);
             isSorted = true;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
         {
             if (isSorted) shuffleArray(heights);
+            std::cout << "Bubble sort" << std::endl;
             bubble_sort(heights, bars_count);
             isSorted = true;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
         {
             if (isSorted) shuffleArray(heights);
+            std::cout << "Merge sort" << std::endl;
             merge_sort(heights, 0, bars_count-1);
             isSorted = true;
         }
-
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
+        {
+            if (isSorted) shuffleArray(heights);
+            heap_sort(heights, bars_count);
+            isSorted = true;
+        }
+        drawBars(window, heights);
     }
+
+    delete[] heights;
 
 
     return 0;
